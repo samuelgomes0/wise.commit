@@ -1,7 +1,7 @@
 {
   "name": "wisecommit",
   "version": "1.0.0",
-  "description": "Automated Conventional Commit message generator based on git diff.",
+  "description": "Generate Conventional Commit messages automatically based on your staged files. Simple, configurable, and developer-friendly.",
   "keywords": [
     "commit",
     "cli",
