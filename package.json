@@ -1,0 +1,28 @@
+{
+  "name": "wisecommit",
+  "version": "1.0.0",
+  "description": "Automated Conventional Commit message generator based on git diff.",
+  "keywords": [
+    "commit",
+    "cli",
+    "conventional-commits",
+    "automation"
+  ],
+  "author": "Samuel Gomes Rosa",
+  "license": "MIT",
+  "bin": {
+    "wisecommit": "./bin/wisecommit.js"
+  },
+  "scripts": {
+    "build": "tsc && node scripts/add-shebang.js",
+    "deploy": "npm run build && npm link"
+  },
+  "dependencies": {
+    "commander": "^9.4.1",
+    "simple-git": "^3.27.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.0.0"
+  }
+}
