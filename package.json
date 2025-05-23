@@ -1,5 +1,5 @@
 {
-  "name": "wisecommit",
+  "name": "wise.commit",
   "version": "1.0.0",
   "description": "Generate Conventional Commit messages automatically based on your staged files. Simple, configurable, and developer-friendly.",
   "keywords": [
