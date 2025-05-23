@@ -121,7 +121,7 @@ The tool will sequentially create commits with the suggested messages.
 
 - Node.js >= 14
 - Git installed
-- (Optional) Groq API Key
+- Groq API Key
 
 ## 🚧 Roadmap
 
