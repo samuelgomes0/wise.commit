@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
+import { generateCommitMessagesWithGroq } from "./ai/groq";
+import { buildPromptForMultipleChanges } from "./ai/prompt";
 import { loadConfig, saveConfig } from "./config/wisecommitConfig";
-import {
-  generateCommitMessages,
-  hasStagedFiles,
-  isGitRepo,
-} from "./git/commitGen";
+import { getStagedFiles, hasStagedFiles, isGitRepo } from "./git/commitGen";
 import { validateApiKey } from "./utils/validateApiKey";
 
 const program = new Command();
 
+function truncatePrompt(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  console.warn("⚠️ Prompt truncado para evitar erro 413.");
+  return text.slice(0, maxLength) + "\n\n[...truncated...]";
+}
+
 program
   .name("wisecommit")
   .description(
-    "Automated Conventional Commit message generator based on git diff"
+    "Automated Conventional Commit message generator based on file list"
   )
-  .version("1.0.0")
-  .option("-l, --limit <number>", "Number of lines per file to summarize")
+  .version("1.1.0")
   .option(
     "-c, --commit",
     "Automatically create git commit with generated messages"
@@ -40,12 +43,12 @@ program
 program.action(async (options) => {
   const config = loadConfig();
 
-  const limit = options.limit ? parseInt(options.limit, 10) : 10;
   const useEmojis =
     options.emojis !== undefined
       ? options.emojis === "true"
       : config.emojis ?? false;
-  const apiKey = options.apiKey || config.apiKey || process.env.GROQ_API_KEY;
+
+  const apiKey = options.apiKey || config.apiKey;
 
   const updatedConfig = {
     emojis: useEmojis,
@@ -58,14 +61,12 @@ program.action(async (options) => {
 
   if (isConfigChange) {
     saveConfig(updatedConfig);
+    console.log("✅ Configuration updated.");
     return;
   }
 
   if (!(await isGitRepo())) {
     console.log("🚫 No Git repository detected in this directory.");
-    console.log(
-      "💡 Tip: Initialize a repository with `git init` before using this command."
-    );
     process.exit(0);
   }
 
@@ -80,22 +81,32 @@ program.action(async (options) => {
     return;
   }
 
-  console.log("🔍 Generating commit messages...");
+  let files = await getStagedFiles();
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  files = files.filter((file) => !file.includes("node_modules"));
 
-  process.env.GROQ_API_KEY = apiKey;
+  if (files.length === 0) {
+    console.log("⚠️ No staged files after filtering node_modules. Aborting.");
+    return;
+  }
 
-  const messages = await generateCommitMessages({
-    limit,
-    useEmojis,
-  });
+  console.log("🔍 Generating commit message...");
+
+  const fileSummaries = files.map((f) => `modified: ${f}`).join("\n");
+
+  const promptRaw = buildPromptForMultipleChanges(fileSummaries, useEmojis);
+
+  const MAX_PROMPT_LENGTH = 10000;
+  const prompt = truncatePrompt(promptRaw, MAX_PROMPT_LENGTH);
+
+  const aiResponse = await generateCommitMessagesWithGroq(prompt, apiKey);
 
   console.log("\n💡 Suggested commit messages:\n");
-  messages.forEach((message: string) => console.log(message));
+  console.log(aiResponse);
 
   if (options.commit) {
     console.log("\n📝 Creating git commits...");
+    const messages = aiResponse.split("\n").filter(Boolean);
     for (const msg of messages) {
       const { execSync } = await import("child_process");
       execSync(`git commit -m "${msg}"`, { stdio: "inherit" });
