@@ -115,10 +115,10 @@ program.action(async (options) => {
   const MAX_PROMPT_LENGTH = 10000;
   const prompt = truncatePrompt(promptRaw, MAX_PROMPT_LENGTH);
 
-  const aiResponse = await generateCommitMessageWithGroq(apiKey, prompt);
+  const commitMessage = await generateCommitMessageWithGroq(apiKey, prompt);
 
   console.log("\n💡 Suggested commit message:\n");
-  console.log(aiResponse);
+  console.log(commitMessage);
 
   const userConfirmed = await askUserConfirmation(
     "\n❓ Do you want to use this commit message?"
@@ -131,7 +131,7 @@ program.action(async (options) => {
 
   if (options.commit) {
     try {
-      execSync(`git commit -m "${aiResponse}"`, { stdio: "inherit" });
+      execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
       console.log("✅ Commit created successfully.");
     } catch (error) {
       console.error("❌ Failed to create commit:", error);
