@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "commander": "^9.5.0",
+    "groq-sdk": "^0.22.0",
     "node-fetch": "^3.3.2",
     "simple-git": "^3.27.0"
   },

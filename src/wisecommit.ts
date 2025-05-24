@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+import { execSync } from "child_process";
 import { Command } from "commander";
-import { generateCommitMessagesWithGroq } from "./ai/groq";
+import * as readline from "readline";
+import generateCommitMessageWithGroq from "./ai/groq";
 import { buildPromptForMultipleChanges } from "./ai/prompt";
 import { loadConfig, saveConfig } from "./config/wisecommitConfig";
 import { getStagedFiles, hasStagedFiles, isGitRepo } from "./git/commitGen";
@@ -13,6 +15,20 @@ function truncatePrompt(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   console.warn("⚠️ Prompt truncado para evitar erro 413.");
   return text.slice(0, maxLength) + "\n\n[...truncated...]";
+}
+
+function askUserConfirmation(question: string): Promise<boolean> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(`${question} (y/n): `, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === "y");
+    });
+  });
 }
 
 program
@@ -99,18 +115,29 @@ program.action(async (options) => {
   const MAX_PROMPT_LENGTH = 10000;
   const prompt = truncatePrompt(promptRaw, MAX_PROMPT_LENGTH);
 
-  const aiResponse = await generateCommitMessagesWithGroq(prompt, apiKey);
+  const aiResponse = await generateCommitMessageWithGroq(apiKey, prompt);
 
-  console.log("\n💡 Suggested commit messages:\n");
+  console.log("\n💡 Suggested commit message:\n");
   console.log(aiResponse);
 
+  const userConfirmed = await askUserConfirmation(
+    "\n❓ Do you want to use this commit message?"
+  );
+
+  if (!userConfirmed) {
+    console.log("❌ Commit aborted by user.");
+    return;
+  }
+
   if (options.commit) {
-    console.log("\n📝 Creating git commits...");
-    const messages = aiResponse.split("\n").filter(Boolean);
-    for (const msg of messages) {
-      const { execSync } = await import("child_process");
-      execSync(`git commit -m "${msg}"`, { stdio: "inherit" });
+    try {
+      execSync(`git commit -m "${aiResponse}"`, { stdio: "inherit" });
+      console.log("✅ Commit created successfully.");
+    } catch (error) {
+      console.error("❌ Failed to create commit:", error);
     }
+  } else {
+    console.log("✅ Commit message ready. Use the `-c` option to auto-commit.");
   }
 });
 
