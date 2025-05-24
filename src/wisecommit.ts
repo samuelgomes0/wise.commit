@@ -24,9 +24,10 @@ function askUserConfirmation(question: string): Promise<boolean> {
   });
 
   return new Promise((resolve) => {
-    rl.question(`${question} (y/n): `, (answer) => {
+    rl.question(`${question} (Y/n): `, (answer) => {
       rl.close();
-      resolve(answer.trim().toLowerCase() === "y");
+      const normalized = answer.trim().toLowerCase();
+      resolve(normalized === "" || normalized === "y");
     });
   });
 }
@@ -37,10 +38,6 @@ program
     "Automated Conventional Commit message generator based on file list"
   )
   .version("1.1.0")
-  .option(
-    "-c, --commit",
-    "Automatically create git commit with generated messages"
-  )
   .option(
     "--emojis <boolean>",
     "Include emojis in commit messages (true/false)"
@@ -121,15 +118,10 @@ program.action(async (options) => {
   console.log(commitMessage);
 
   const userConfirmed = await askUserConfirmation(
-    "\n❓ Do you want to use this commit message?"
+    "\n❓ Do you want to commit this message?"
   );
 
-  if (!userConfirmed) {
-    console.log("❌ Commit aborted by user.");
-    return;
-  }
-
-  if (options.commit) {
+  if (userConfirmed) {
     try {
       execSync(`git commit -m "${commitMessage}"`, { stdio: "inherit" });
       console.log("✅ Commit created successfully.");
@@ -137,7 +129,7 @@ program.action(async (options) => {
       console.error("❌ Failed to create commit:", error);
     }
   } else {
-    console.log("✅ Commit message ready. Use the `-c` option to auto-commit.");
+    console.log("❌ Commit aborted by user.");
   }
 });
 
