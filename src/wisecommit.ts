@@ -20,7 +20,7 @@ function truncatePrompt(text: string, maxLength: number): string {
 function askUserConfirmation(question: string): Promise<boolean> {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout,
+    output: process.stdout
   });
 
   return new Promise((resolve) => {
@@ -59,14 +59,14 @@ program.action(async (options) => {
   const useEmojis =
     options.emojis !== undefined
       ? options.emojis === "true"
-      : config.emojis ?? false;
+      : (config.emojis ?? false);
 
   const apiKey = options.apiKey || config.apiKey;
 
   const updatedConfig = {
     emojis: useEmojis,
     lang: config.lang ?? "en",
-    apiKey,
+    apiKey
   };
 
   const isConfigChange =

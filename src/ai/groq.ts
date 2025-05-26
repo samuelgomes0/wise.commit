@@ -17,14 +17,14 @@ async function generateCommitMessageWithGroq(
       {
         role: "system",
         content:
-          "You are a helpful assistant that generates concise and meaningful Conventional Commit messages based on git diffs.",
+          "You are a helpful assistant that generates concise and meaningful Conventional Commit messages based on git diffs."
       },
       {
         role: "user",
-        content: prompt,
-      },
+        content: prompt
+      }
     ],
-    temperature: 0.2,
+    temperature: 0.2
   });
 
   return choices[0].message.content.trim();

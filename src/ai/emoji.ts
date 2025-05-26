@@ -21,7 +21,7 @@ export const emojiMap: Record<string, string> = {
   recycle: "♻️",
   add: "➕",
   "remove-deps": "➖",
-  merge: "🔀",
+  merge: "🔀"
 };
 
 function describeScope(type: string): string {
@@ -48,7 +48,7 @@ function describeScope(type: string): string {
     recycle: "Code reuse or rewriting",
     add: "Adding dependencies or files",
     "remove-deps": "Removing dependencies",
-    merge: "Merging branches",
+    merge: "Merging branches"
   };
 
   return descriptions[type] || "No description";
