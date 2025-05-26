@@ -24,13 +24,7 @@ export const emojiMap: Record<string, string> = {
   merge: "🔀",
 };
 
-export function generateEmojiInstructions(): string {
-  return Object.entries(emojiMap)
-    .map(([type, emoji]) => `${emoji} ${type}: ${describeType(type)}`)
-    .join("\n");
-}
-
-function describeType(type: string): string {
+function describeScope(type: string): string {
   const descriptions: Record<string, string> = {
     feat: "New feature",
     fix: "Bug fix",
@@ -58,4 +52,10 @@ function describeType(type: string): string {
   };
 
   return descriptions[type] || "No description";
+}
+
+export function generateEmojiInstructions(): string {
+  return Object.entries(emojiMap)
+    .map(([type, emoji]) => `${emoji} ${type}: ${describeScope(type)}`)
+    .join("\n");
 }
