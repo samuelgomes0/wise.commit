@@ -24,7 +24,7 @@ async function generateCommitMessageWithGroq(
         content: prompt
       }
     ],
-    temperature: 0.2
+    temperature: 0.7
   });
 
   return choices[0].message.content.trim();

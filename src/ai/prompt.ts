@@ -5,137 +5,150 @@ export function buildPromptForMultipleChanges(
   useEmojis: boolean
 ): string {
   const emojiInstruction = useEmojis
-    ? `## ✅ **Emoji usage:**
+    ? `## ✅ Emoji Usage
 
-  Use **consistently** the following emojis for each type of change, based on the nature of the modification:
+Use the correct emoji for **each type of change**, based on its intent:
 
-  ${generateEmojiInstructions()}
+${generateEmojiInstructions()}
 
-  **You must carefully classify each change into one of these categories and apply the corresponding emoji.**  
-  **Do not use the same emoji for all changes unless they truly belong to the same category.**`
-    : `## ✅ **No emojis required**
+Never reuse the same emoji across unrelated changes.`
+    : `## ✅ No Emojis
 
-  Do **NOT** use any emojis. Only write the scope and description, as shown below.`;
+Do **not** use emojis. Just write the scope and the short description.`;
 
   const exampleCommit = useEmojis
     ? `\`\`\`
-  ✨ (package.json): initialize package metadata
-  🔨 (index.ts): refactor entry point
-  🐛 (auth.ts): fix authentication bug
-  📝 (README.md): update documentation
-  🔥 (utils.ts): remove unused function
-  \`\`\``
+✨ (auth.ts): add login handler
+🔨 (auth.ts): refactor token validation
+🐛 (form.ts): fix password mismatch bug
+🔥 (config.ts): remove deprecated settings
+📝 (README.md): update usage example
+➕ (package.json): add lodash dependency
+➖ (package.json): remove axios
+✅ (auth.test.ts): add test for session timeout
+🎨 (App.tsx): format JSX layout
+♻️ (api.ts): simplify fetch wrapper
+📦 (vite.config.ts): update build configuration
+🚀 (cache.ts): optimize memoization logic
+🔧 (tsconfig.json): update paths config
+🔒 (auth.ts): sanitize user input
+📄 (LICENSE): update license year
+💡 (user.ts): clarify function purpose in comment
+\`\`\``
     : `\`\`\`
-  (package.json): initialize package metadata
-  (index.ts): refactor entry point
-  (auth.ts): fix authentication bug
-  (README.md): update documentation
-  (utils.ts): remove unused function
-  \`\`\``;
+(auth.ts): add login handler
+(auth.ts): refactor token validation
+(form.ts): fix password mismatch bug
+(config.ts): remove deprecated settings
+(README.md): update usage example
+(package.json): add lodash dependency
+(package.json): remove axios
+(auth.test.ts): add test for session timeout
+(App.tsx): format JSX layout
+(api.ts): simplify fetch wrapper
+(vite.config.ts): update build configuration
+(cache.ts): optimize memoization logic
+(tsconfig.json): update paths config
+(auth.ts): sanitize user input
+(LICENSE): update license year
+(user.ts): clarify function purpose in comment
+\`\`\``;
 
   return `
-  # 🧠 **Your role**
+# 🤖 Role
 
-  You are an AI assistant specialized in generating **concise and meaningful Conventional Commit messages** based on Git diffs.
+You are an assistant that generates **clear, expressive, and semantically correct Conventional Commit messages** from a Git diff.
 
-  Your goal is to **analyze** the provided diff carefully and produce **one commit message per distinct change**, using the **most appropriate emoji** based on the nature of each modification.
+Each commit should:
+- Be a **single line**
+- Use the **correct emoji** (if enabled)
+- Use **filename as scope**
+- Start with an **action verb in imperative mood**
+- Be **precise** and **unambiguous**
 
-  ---
+---
 
-  ## ✅ **Commit message format:**
+## 📄 Format
 
-  \`\`\`
-  <emoji> (filename): <short description>
-  \`\`\`
+\`\`\`
+<emoji> (filename): <short description>
+\`\`\`
 
-  or
+or (without emojis):
 
-  \`\`\`
-  (filename): <short description>
-  \`\`\`
+\`\`\`
+(filename): <short description>
+\`\`\`
 
-  depending on whether emojis are enabled.
+---
 
-  ---
+${emojiInstruction}
 
-  ${emojiInstruction}
+---
 
-  ---
+## ✅ Examples
 
-  ## ✅ **Example of commit messages:**
+${exampleCommit}
 
-  ${exampleCommit}
+---
 
-  ---
+## 🔍 Specificity Rules
 
-  ## ✅ **What defines a "distinct change":**
+Avoid generic or meaningless messages.
 
-  - A new feature, function, or method (**use ✨ feat**).
-  - A bug fix or correction (**use 🐛 fix**).
-  - A removal or addition of dependency (**use ➕ add / ➖ remove-deps**).
-  - A refactor or code restructuring (**use 🔨 refactor**).
-  - A documentation update (**use 📝 docs**).
-  - A removal (**use 🔥 remove**).
-  - Any other isolated and meaningful modification: **choose the correct emoji** from the list.
+**Bad examples:**
+- (utils.ts): update function  
+- 🔨 (index.ts): changed logic  
+- ✨ (api.ts): added feature
 
-  **Always match the emoji with the nature of the change**.
+**Good examples:**
+- ♻️ (utils.ts): extract date formatter  
+- 🔨 (index.ts): inline navigation helper  
+- ✨ (api.ts): add keyboard shortcut support  
+- 🔥 (auth.ts): remove legacy token logic
 
-  ---
+Use action verbs like: \`add\`, \`fix\`, \`refactor\`, \`remove\`, \`format\`, \`rename\`, \`extract\`, \`sanitize\`, \`simplify\`, \`inline\`, \`replace\`, \`introduce\`, \`clarify\`
 
-  ## ✅ **Guidelines:**
+---
 
-  - Use **only** the filename as scope — no directory paths.
-  - Keep descriptions **short**, **action-oriented**, and in **imperative mood**.
-  - **No explanations** — output only the list of commit messages.
-  - **No other text** — do not include greetings, apologies, or summaries.
+## 🔎 Distinct Changes
 
-  ---
+Identify a commit-worthy message for **each logical change**, such as:
+- new function or feature
+- bug fix
+- code restructure
+- dependency added/removed
+- style or formatting changes
+- tests or documentation
+- performance or security updates
+- removed code or files
 
-  ## ❌ **Incorrect examples:**
+---
 
-  - Using the same emoji for all changes without classification ❌
-  - Including directory path: \`✨ (src/index.ts): added function\` ❌
-  - Descriptive mood: \`✨ (index.ts): this adds...\` ❌
-  - Long descriptions: \`✨ (index.ts): added a function that does x, y, and z...\` ❌
+## 🧠 Guidelines
 
-  ---
+- Use only the filename in parentheses — no full paths
+- Be action-oriented and to the point
+- Avoid vague verbs like "change", "update", "modify"
+- Do not include explanations, commentary, or summaries
+- Return only the final commit message list
 
-  ## ✅ **Correct examples:**
+---
 
-  - \`✨ (index.ts): add new utility function\`
-  - \`🔥 (index.ts): remove unused import\`
-  - \`🐛 (auth.ts): fix login issue\`
-  - \`📝 (README.md): update installation instructions\`
+## 📝 Git Diff Input
 
-  ---
+\`\`\`diff
+${diff}
+\`\`\`
 
-  ## 📝 **Provided diff:**
+---
 
-  \`\`\`diff
-  ${diff}
-  \`\`\`
+## 🚨 Output Instructions
 
-  ---
+**Only** output the commit message list.  
+**No** titles, headings, greetings, summaries, or markdown.  
+**Strictly** follow the format above.
 
-  ## 🚨 **Process:**
-
-  1. Carefully **read and analyze** the diff.
-  2. Identify each **distinct change**.
-  3. For each change, **select the correct emoji** from the list.
-  4. **Generate a commit message** using the format described.
-  5. Output **only** the list of commit messages.
-
-  ---
-
-  ## 🚨 **Critical instruction:**
-
-**Output only the list of commit messages.**  
-**No introductory sentences, no summaries, no confirmations.**  
-**Just the list, nothing else.**
-
-**Violating this rule will result in an incorrect response.**
-
-Proceed.
-
-  `;
+Begin.
+`;
 }
