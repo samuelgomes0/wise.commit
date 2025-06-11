@@ -1,13 +1,14 @@
+// prompt.ts
 import { generateEmojiInstructions } from "./emoji";
 
 export function buildPromptForMultipleChanges(
   diff: string,
   useEmojis: boolean
 ): string {
-  const emojiInstruction = useEmojis
+  const emojiBlock = useEmojis
     ? `## ✅ Emoji Usage
 
-Use the correct emoji for **each type of change**, based on its intent:
+Use the correct emoji for **each type of change**, based on intent:
 
 ${generateEmojiInstructions()}
 
@@ -16,41 +17,41 @@ Never reuse the same emoji across unrelated changes.`
 
 Do **not** use emojis. Just write the scope and the short description.`;
 
-  const exampleCommit = useEmojis
+  const examples = useEmojis
     ? `\`\`\`
-✨ (auth.ts): add login handler
-🔨 (auth.ts): refactor token validation
-🐛 (form.ts): fix password mismatch bug
-🔥 (config.ts): remove deprecated settings
-📝 (README.md): update usage example
-➕ (package.json): add lodash dependency
-➖ (package.json): remove axios
-✅ (auth.test.ts): add test for session timeout
-🎨 (App.tsx): format JSX layout
-♻️ (api.ts): simplify fetch wrapper
-📦 (vite.config.ts): update build configuration
-🚀 (cache.ts): optimize memoization logic
-🔧 (tsconfig.json): update paths config
-🔒 (auth.ts): sanitize user input
-📄 (LICENSE): update license year
+✨ (auth.ts): add login handler  
+🔨 (auth.ts): refactor token validation  
+🐛 (form.ts): fix password mismatch bug  
+🔥 (config.ts): remove deprecated settings  
+📝 (README.md): update usage example  
+➕ (package.json): add lodash dependency  
+➖ (package.json): remove axios  
+✅ (auth.test.ts): add test for session timeout  
+🎨 (App.tsx): format JSX layout  
+♻️ (api.ts): simplify fetch wrapper  
+📦 (vite.config.ts): update build configuration  
+🚀 (cache.ts): optimize memoization logic  
+🔧 (tsconfig.json): update paths config  
+🔒 (auth.ts): sanitize user input  
+📄 (LICENSE): update license year  
 💡 (user.ts): clarify function purpose in comment
 \`\`\``
     : `\`\`\`
-(auth.ts): add login handler
-(auth.ts): refactor token validation
-(form.ts): fix password mismatch bug
-(config.ts): remove deprecated settings
-(README.md): update usage example
-(package.json): add lodash dependency
-(package.json): remove axios
-(auth.test.ts): add test for session timeout
-(App.tsx): format JSX layout
-(api.ts): simplify fetch wrapper
-(vite.config.ts): update build configuration
-(cache.ts): optimize memoization logic
-(tsconfig.json): update paths config
-(auth.ts): sanitize user input
-(LICENSE): update license year
+(auth.ts): add login handler  
+(auth.ts): refactor token validation  
+(form.ts): fix password mismatch bug  
+(config.ts): remove deprecated settings  
+(README.md): update usage example  
+(package.json): add lodash dependency  
+(package.json): remove axios  
+(auth.test.ts): add test for session timeout  
+(App.tsx): format JSX layout  
+(api.ts): simplify fetch wrapper  
+(vite.config.ts): update build configuration  
+(cache.ts): optimize memoization logic  
+(tsconfig.json): update paths config  
+(auth.ts): sanitize user input  
+(LICENSE): update license year  
 (user.ts): clarify function purpose in comment
 \`\`\``;
 
@@ -59,10 +60,10 @@ Do **not** use emojis. Just write the scope and the short description.`;
 
 You are an assistant that generates **clear, expressive, and semantically correct Conventional Commit messages** from a Git diff.
 
-Each commit should:
+Each commit must:
 - Be a **single line**
 - Use the **correct emoji** (if enabled)
-- Use **filename as scope**
+- Use the **filename as scope**
 - Start with an **action verb in imperative mood**
 - Be **precise** and **unambiguous**
 
@@ -70,25 +71,25 @@ Each commit should:
 
 ## 📄 Format
 
+With emojis:
 \`\`\`
 <emoji> (filename): <short description>
 \`\`\`
 
-or (without emojis):
-
+Without emojis:
 \`\`\`
 (filename): <short description>
 \`\`\`
 
 ---
 
-${emojiInstruction}
+${emojiBlock}
 
 ---
 
 ## ✅ Examples
 
-${exampleCommit}
+${examples}
 
 ---
 
@@ -107,7 +108,7 @@ Avoid generic or meaningless messages.
 - ✨ (api.ts): add keyboard shortcut support  
 - 🔥 (auth.ts): remove legacy token logic
 
-Use action verbs like: \`add\`, \`fix\`, \`refactor\`, \`remove\`, \`format\`, \`rename\`, \`extract\`, \`sanitize\`, \`simplify\`, \`inline\`, \`replace\`, \`introduce\`, \`clarify\`
+Use action verbs like: \`add\`, \`fix\`, \`refactor\`, \`remove\`, \`format\`, \`rename\`, \`extract\`, \`sanitize\`, \`simplify\`, \`inline\`, \`replace\`, \`introduce\`, \`clarify\`.
 
 ---
 
@@ -145,9 +146,13 @@ ${diff}
 
 ## 🚨 Output Instructions
 
-**Only** output the commit message list.  
-**No** titles, headings, greetings, summaries, or markdown.  
-**Strictly** follow the format above.
+⚠️ **Output ONLY the commit message(s).**
+
+- No extra titles, explanations, or markdown.
+- No greeting or commentary.
+- No justification of the output.
+- No rephrasing of the instructions.
+- Strictly return only the final commit message list, line by line.
 
 Begin.
 `;
