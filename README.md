@@ -1,151 +1,185 @@
-# 🧠 wisecommit
+# 🧠 wise.commit
 
-**Automated Conventional Commit Message Generator**  
-Generate Conventional Commit messages automatically based on your staged files. Simple, configurable, and developer-friendly.
+**Automated Conventional Commit Messages with AI Assistance**  
+Make your Git workflow smarter. `wise.commit` analyzes your staged changes and generates Conventional Commits automatically — with optional emojis, configuration persistence, and seamless Git integration.
 
-## ✅ Features
+[![NPM Version](https://img.shields.io/npm/v/wise.commit?color=blue)](https://www.npmjs.com/package/wise.commit)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![Node Version](https://img.shields.io/node/v/wise.commit)](https://nodejs.org/)
 
-- 🔍 Auto-analyze staged files.
-- ✨ Optional emoji support.
-- ⚡ Auto-commit mode.
-- 🛠 Configurable with persistent settings in `~/.wisecommitrc`.
-- 🚫 Gracefully handles non-Git directories.
-- 💻 Designed for modern developer workflows.
+---
 
-## 🚀 Installation
+## ✨ Overview
 
-```bash
-npm install -g wisecommit
-```
+`wise.commit` is a CLI tool that uses AI to generate [Conventional Commit](https://www.conventionalcommits.org/) messages based on your staged files. It streamlines commit creation, improves consistency, and supports customization to suit your workflow.
 
-or for local development:
+---
 
-```bash
+## 🔧 Key Features
+
+- 📁 Context-aware commit message generation based on `git diff`.
+- 🤖 AI-powered suggestions (via Groq LLM).
+- ✨ Optional emoji support for visual flair.
+- 💾 Persistent global configuration (`~/.wisecommitrc`).
+- ⚡ One-liner auto-commit support.
+- 🧱 Works smoothly even outside Git projects (with graceful error handling).
+
+---
+
+## 📦 Installation
+
+### Global (recommended)
+
+\`\`\`bash
+npm install -g wise.commit
+\`\`\`
+
+### Local Development
+
+\`\`\`bash
+git clone https://github.com/samuelgomes0/wise.commit.git
+cd wise.commit
+npm install
 npm link
-```
+\`\`\`
+
+---
 
 ## ⚙️ Configuration
 
-**Configuration is saved globally** in:
+`wise.commit` stores its configuration globally in:
 
-```
+\`\`\`
 ~/.wisecommitrc
-```
+\`\`\`
 
-Example:
+### Sample `.wisecommitrc`
 
-```json
+\`\`\`json
 {
-  "emojis": true,
-  "lang": "en",
-  "apiKey": "sk-..."
+"emojis": true,
+"lang": "en",
+"apiKey": "sk-..."
 }
-```
+\`\`\`
 
-## 💾 Saving configuration
+You can modify these manually or automatically via CLI flags.
 
-Configuration is **automatically saved** when you pass flags:
+### Set config from CLI
 
-```bash
+\`\`\`bash
 wisecommit --emojis=true --api-key=sk-xxxx
-```
+\`\`\`
 
-➡️ Saved to `~/.wisecommitrc` automatically.
+✅ The config will be saved automatically.
 
-Check your current configuration:
+### View current configuration
 
-```bash
+\`\`\`bash
 wisecommit config
-```
+\`\`\`
 
-## ⚡ Usage
+---
 
-```bash
+## 🚀 Usage
+
+\`\`\`bash
 wisecommit [options]
-```
+\`\`\`
 
-Example:
+### Example
 
-```bash
-wisecommit --emojis=true --commit
-```
-
-## 🛠 Options
-
-| Option                 | Description                       | Default |
-| ---------------------- | --------------------------------- | ------- |
-| `-l, --limit <number>` | Limit number of files to process  | 10      |
-| `-c, --commit`         | Automatically create Git commits  | false   |
-| `--emojis <boolean>`   | Include emojis in commit messages | false   |
-| `--api-key <key>`      | Set Groq API Key                  | -       |
-
-## 📦 Example workflow
-
-```bash
+\`\`\`bash
 git add .
-wisecommit --emojis=true
-```
+wisecommit --emojis=true --commit
+\`\`\`
 
-Example output:
+🔍 Sample output:
 
-```
+\`\`\`
 ✅ Configuration saved to ~/.wisecommitrc
-🔍 Generating commit messages...
+🔍 Analyzing changes...
 
-💡 Suggested commit messages:
+✨ feat(index.ts): improve validation logic
+📦 chore(package.json): update dependency versions
+\`\`\`
 
-✨ feat(index.ts): update index logic
-✨ chore(package.json): update dependencies
-```
+---
 
-## 🚫 Not in a Git repository?
+## 🛠 Available Options
 
-Graceful message:
+| Flag                     | Description                              | Default   |
+| ------------------------ | ---------------------------------------- | --------- |
+| \`-l, --limit <number>\` | Max number of files to analyze           | \`10\`    |
+| \`-c, --commit\`         | Automatically create commits from output | \`false\` |
+| \`--emojis <boolean>\`   | Enable emojis in generated messages      | \`false\` |
+| \`--api-key <key>\`      | Define your Groq API key                 | —         |
 
-```
-🚫 No Git repository detected in this directory.
-💡 Tip: Initialize a repository with `git init` before using this command.
-```
-
-## 📝 Auto-committing
-
-Use:
-
-```bash
-wisecommit --commit
-```
-
-The tool will sequentially create commits with the suggested messages.
+---
 
 ## ❗ Requirements
 
-- Node.js >= 14
-- Git installed
-- Groq API Key
+- **Node.js** ≥ 14
+- **Git** installed
+- **Groq API Key** (for LLM-powered commit generation)
 
-## 🚧 Roadmap
+---
 
-- [ ] Multi-language support.
-- [ ] Enhanced AI commit message generation.
-- [ ] Plugin system for custom commit styles.
-- [ ] Dry-run mode for safe previews.
+## 📂 Sample Workflow
+
+\`\`\`bash
+git init
+touch index.js
+git add index.js
+wisecommit --emojis=true --commit
+\`\`\`
+
+---
+
+## 🚫 Not a Git Repository?
+
+The tool will handle it gracefully:
+
+\`\`\`
+🚫 No Git repository detected in this directory.
+💡 Tip: Run \`git init\` to get started.
+\`\`\`
+
+---
+
+## 🛣️ Roadmap
+
+- [ ] i18n support for multiple languages
+- [ ] Smarter AI commit generation
+- [ ] Plugin system for custom commit formats
+- [ ] Dry-run and interactive preview modes
+
+---
 
 ## 🤝 Contributing
 
-1. Fork the repo.
-2. Create your feature branch: `git checkout -b feature/my-feature`.
-3. Commit your changes.
-4. Push to the branch.
-5. Open a pull request.
+We welcome contributions! To get started:
 
-## 🛡️ License
+1. Fork this repository
+2. Create a new branch: \`git checkout -b feature/your-feature\`
+3. Commit your changes
+4. Push to your fork
+5. Open a pull request
 
-MIT © Samuel Gomes Rosa
+---
+
+## 📄 License
+
+MIT License © [Samuel Gomes Rosa](https://github.com/samuelgomes0)
+
+---
 
 ## 💡 Inspiration
 
-Inspired by tools like `commitizen` and `opencommit` with a focus on AI integration and user-friendly automation.
+This tool was inspired by the practicality of \`commitizen\`, the automation of \`opencommit\`, and the power of modern LLMs — designed to eliminate decision fatigue when writing commit messages.
 
-## ✅ Ready to elevate your commits?
+---
 
-**→ Run `wisecommit` and never write boring commits again!**
+## ✅ Ready to commit like a pro?
+
+**Run \`wisecommit\` and let your commits speak for themselves.**
