@@ -30,18 +30,18 @@ Make your Git workflow smarter. `wise.commit` analyzes your staged changes and g
 
 ### Global (recommended)
 
-\`\`\`bash
+```bash
 npm install -g wise.commit
-\`\`\`
+```
 
 ### Local Development
 
-\`\`\`bash
+```bash
 git clone https://github.com/samuelgomes0/wise.commit.git
 cd wise.commit
 npm install
 npm link
-\`\`\`
+```
 
 ---
 
@@ -49,71 +49,71 @@ npm link
 
 `wise.commit` stores its configuration globally in:
 
-\`\`\`
+```bash
 ~/.wisecommitrc
-\`\`\`
+```
 
 ### Sample `.wisecommitrc`
 
-\`\`\`json
+```json
 {
-"emojis": true,
-"lang": "en",
-"apiKey": "sk-..."
+  "emojis": true,
+  "lang": "en",
+  "apiKey": "sk-..."
 }
-\`\`\`
+```
 
 You can modify these manually or automatically via CLI flags.
 
 ### Set config from CLI
 
-\`\`\`bash
+```bash
 wisecommit --emojis=true --api-key=sk-xxxx
-\`\`\`
+```
 
 ✅ The config will be saved automatically.
 
 ### View current configuration
 
-\`\`\`bash
+```bash
 wisecommit config
-\`\`\`
+```
 
 ---
 
 ## 🚀 Usage
 
-\`\`\`bash
+```bash
 wisecommit [options]
-\`\`\`
+```
 
 ### Example
 
-\`\`\`bash
+```bash
 git add .
 wisecommit --emojis=true --commit
-\`\`\`
+```
 
 🔍 Sample output:
 
-\`\`\`
+```bash
 ✅ Configuration saved to ~/.wisecommitrc
 🔍 Analyzing changes...
 
 ✨ feat(index.ts): improve validation logic
 📦 chore(package.json): update dependency versions
-\`\`\`
+```
 
 ---
 
 ## 🛠 Available Options
 
-| Flag                     | Description                              | Default   |
-| ------------------------ | ---------------------------------------- | --------- |
-| \`-l, --limit <number>\` | Max number of files to analyze           | \`10\`    |
-| \`-c, --commit\`         | Automatically create commits from output | \`false\` |
-| \`--emojis <boolean>\`   | Enable emojis in generated messages      | \`false\` |
-| \`--api-key <key>\`      | Define your Groq API key                 | —         |
+| Flag                   | Description                              | Default |
+| ---------------------- | ---------------------------------------- | ------- |
+| `-l, --limit <number>` | Max number of files to analyze           | `10`    |
+| `-c, --commit`         | Automatically create commits from output | `false` |
+| `--emojis <boolean>`   | Enable emojis in generated messages      | `false` |
+| `--api-key <key>`      | Define your Groq API key                 | —       |
 
 ---
 
@@ -127,12 +127,12 @@ wisecommit --emojis=true --commit
 
 ## 📂 Sample Workflow
 
-\`\`\`bash
+```bash
 git init
 touch index.js
 git add index.js
 wisecommit --emojis=true --commit
-\`\`\`
+```
 
 ---
 
@@ -140,10 +140,10 @@ wisecommit --emojis=true --commit
 
 The tool will handle it gracefully:
 
-\`\`\`
+```bash
 🚫 No Git repository detected in this directory.
-💡 Tip: Run \`git init\` to get started.
-\`\`\`
+💡 Tip: Run `git init` to get started.
+```
 
 ---
 
@@ -161,7 +161,7 @@ The tool will handle it gracefully:
 We welcome contributions! To get started:
 
 1. Fork this repository
-2. Create a new branch: \`git checkout -b feature/your-feature\`
+2. Create a new branch: `git checkout -b feature/your-feature`
 3. Commit your changes
 4. Push to your fork
 5. Open a pull request
@@ -176,10 +176,10 @@ MIT License © [Samuel Gomes Rosa](https://github.com/samuelgomes0)
 
 ## 💡 Inspiration
 
-This tool was inspired by the practicality of \`commitizen\`, the automation of \`opencommit\`, and the power of modern LLMs — designed to eliminate decision fatigue when writing commit messages.
+This tool was inspired by the practicality of `commitizen`, the automation of `opencommit`, and the power of modern LLMs — designed to eliminate decision fatigue when writing commit messages.
 
 ---
 
 ## ✅ Ready to commit like a pro?
 
-**Run \`wisecommit\` and let your commits speak for themselves.**
+**Run `wisecommit` and let your commits speak for themselves.**
